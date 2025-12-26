@@ -42,3 +42,26 @@ INSERT INTO columns (title, position) VALUES
   ('To Do', 0),
   ('In Progress', 1),
   ('Done', 2);
+
+-- Create memos table
+CREATE TABLE IF NOT EXISTS memos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+-- Create index for better search performance
+CREATE INDEX IF NOT EXISTS memos_created_at_idx ON memos(created_at);
+CREATE INDEX IF NOT EXISTS memos_title_idx ON memos USING gin(to_tsvector('english', title));
+CREATE INDEX IF NOT EXISTS memos_content_idx ON memos USING gin(to_tsvector('english', content));
+
+-- Enable Row Level Security (RLS)
+ALTER TABLE memos ENABLE ROW LEVEL SECURITY;
+
+-- Create policies to allow all operations for now
+CREATE POLICY "Enable read access for all users" ON memos FOR SELECT USING (true);
+CREATE POLICY "Enable insert access for all users" ON memos FOR INSERT WITH CHECK (true);
+CREATE POLICY "Enable update access for all users" ON memos FOR UPDATE USING (true);
+CREATE POLICY "Enable delete access for all users" ON memos FOR DELETE USING (true);
