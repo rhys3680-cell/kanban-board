@@ -7,7 +7,7 @@ import {
   deleteMemo,
 } from "@/pages/kanban/api/memoApi";
 
-export function useMemo() {
+export function useMemos() {
   const [memos, setMemos] = useState<Memo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
