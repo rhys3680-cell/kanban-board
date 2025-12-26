@@ -20,9 +20,11 @@ function KanbanBoard() {
     columns,
     loading,
     newCardTitle,
+    newCardDescription,
     showAddCard,
     activeCard,
     setNewCardTitle,
+    setNewCardDescription,
     setShowAddCard,
     addCard,
     deleteCard,
@@ -90,14 +92,19 @@ function KanbanBoard() {
 
                 {showAddCard[column.id] ? (
                   <AddCardForm
-                    value={newCardTitle[column.id] || ""}
-                    onValueChange={(value) =>
+                    title={newCardTitle[column.id] || ""}
+                    description={newCardDescription[column.id] || ""}
+                    onTitleChange={(value) =>
                       setNewCardTitle({ ...newCardTitle, [column.id]: value })
+                    }
+                    onDescriptionChange={(value) =>
+                      setNewCardDescription({ ...newCardDescription, [column.id]: value })
                     }
                     onSubmit={() => addCard(column.id)}
                     onCancel={() => {
                       setShowAddCard({ ...showAddCard, [column.id]: false });
                       setNewCardTitle({ ...newCardTitle, [column.id]: "" });
+                      setNewCardDescription({ ...newCardDescription, [column.id]: "" });
                     }}
                   />
                 ) : (
