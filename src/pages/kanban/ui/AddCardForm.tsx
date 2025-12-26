@@ -1,13 +1,17 @@
 interface AddCardFormProps {
-  value: string;
-  onValueChange: (value: string) => void;
+  title: string;
+  description: string;
+  onTitleChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
   onSubmit: () => void;
   onCancel: () => void;
 }
 
 export function AddCardForm({
-  value,
-  onValueChange,
+  title,
+  description,
+  onTitleChange,
+  onDescriptionChange,
   onSubmit,
   onCancel,
 }: AddCardFormProps) {
@@ -16,17 +20,27 @@ export function AddCardForm({
       <input
         type="text"
         placeholder="Card title..."
-        value={value}
-        onChange={(e) => onValueChange(e.target.value)}
+        value={title}
+        onChange={(e) => onTitleChange(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            onSubmit();
-          } else if (e.key === "Escape") {
+          if (e.key === "Escape") {
             onCancel();
           }
         }}
         className="w-full px-3 py-2 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
         autoFocus
+      />
+      <textarea
+        placeholder="Description (optional)..."
+        value={description}
+        onChange={(e) => onDescriptionChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            onCancel();
+          }
+        }}
+        className="w-full px-3 py-2 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all resize-none"
+        rows={3}
       />
       <div className="flex gap-2">
         <button
