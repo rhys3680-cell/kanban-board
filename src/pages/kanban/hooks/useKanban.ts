@@ -14,6 +14,9 @@ export function useKanban() {
   const [newCardTitle, setNewCardTitle] = useState<{ [key: string]: string }>(
     {}
   );
+  const [newCardDescription, setNewCardDescription] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [showAddCard, setShowAddCard] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -41,12 +44,14 @@ export function useKanban() {
     try {
       const column = columns.find((col) => col.id === columnId);
       const position = column?.cards.length || 0;
+      const description = newCardDescription[columnId]?.trim() || "";
 
-      await addCardToColumn(columnId, title, position);
+      await addCardToColumn(columnId, title, description, position);
 
       await fetchData();
 
       setNewCardTitle({ ...newCardTitle, [columnId]: "" });
+      setNewCardDescription({ ...newCardDescription, [columnId]: "" });
       setShowAddCard({ ...showAddCard, [columnId]: false });
     } catch (error) {
       console.error("Error adding card:", error);
@@ -111,9 +116,11 @@ export function useKanban() {
     columns,
     loading,
     newCardTitle,
+    newCardDescription,
     showAddCard,
     activeCard,
     setNewCardTitle,
+    setNewCardDescription,
     setShowAddCard,
     addCard,
     deleteCard,
