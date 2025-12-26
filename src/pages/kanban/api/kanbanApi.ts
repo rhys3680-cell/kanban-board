@@ -23,13 +23,14 @@ export async function fetchKanbanData(): Promise<Column[]> {
 export async function addCardToColumn(
   columnId: string,
   title: string,
+  description: string,
   position: number
 ): Promise<void> {
   try {
     const { error } = await supabase.from("cards").insert({
       column_id: columnId,
       title,
-      description: "",
+      description,
       position,
     });
 
