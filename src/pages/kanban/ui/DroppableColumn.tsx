@@ -25,7 +25,7 @@ export function DroppableColumn({ column, children }: DroppableColumnProps) {
   return (
     <div
       ref={setNodeRef}
-      className={`${colorClass} rounded-lg shadow-md p-4 border-2 transition-colors`}
+      className={`${colorClass} rounded-lg shadow-md p-4 border-2 transition-colors w-80 min-h-96`}
     >
       {children}
     </div>
