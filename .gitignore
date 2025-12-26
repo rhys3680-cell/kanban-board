@@ -25,3 +25,6 @@ dist-ssr
 
 # 설정 파일
 .env
+
+# 테스트 폴더 
+playground
