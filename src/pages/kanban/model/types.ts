@@ -15,3 +15,11 @@ export interface Column {
   created_at: string;
   cards: Card[];
 }
+
+export interface Memo {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
