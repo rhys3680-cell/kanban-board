@@ -27,10 +27,13 @@ function KanbanBoard() {
     newCardDescription,
     showAddCard,
     activeCard,
+    editingCardId,
     setNewCardTitle,
     setNewCardDescription,
     setShowAddCard,
+    setEditingCardId,
     addCard,
+    editCard,
     deleteCard,
     handleDragStart,
     handleDragEnd,
@@ -103,7 +106,11 @@ function KanbanBoard() {
                       <SortableCard
                         key={card.id}
                         card={card}
+                        isEditing={editingCardId === card.id}
+                        onEdit={editCard}
                         onDelete={deleteCard}
+                        onStartEdit={setEditingCardId}
+                        onCancelEdit={() => setEditingCardId(null)}
                       />
                     ))}
                   </div>
