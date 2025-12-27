@@ -4,6 +4,7 @@ import type { Card, Column } from "@/pages/kanban/model/types";
 import {
   fetchKanbanData,
   addCardToColumn,
+  updateCard,
   deleteCardById,
   moveCardToColumn,
 } from "@/pages/kanban/api/kanbanApi";
@@ -21,6 +22,7 @@ export function useKanban() {
     {}
   );
   const [activeCard, setActiveCard] = useState<Card | null>(null);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -55,6 +57,18 @@ export function useKanban() {
       setShowAddCard({ ...showAddCard, [columnId]: false });
     } catch (error) {
       console.error("Error adding card:", error);
+    }
+  }
+
+  async function editCard(cardId: string, title: string, description: string) {
+    if (!title.trim()) return;
+
+    try {
+      await updateCard(cardId, title, description);
+      await fetchData();
+      setEditingCardId(null);
+    } catch (error) {
+      console.error("Error editing card:", error);
     }
   }
 
@@ -119,10 +133,13 @@ export function useKanban() {
     newCardDescription,
     showAddCard,
     activeCard,
+    editingCardId,
     setNewCardTitle,
     setNewCardDescription,
     setShowAddCard,
+    setEditingCardId,
     addCard,
+    editCard,
     deleteCard,
     handleDragStart,
     handleDragEnd,
