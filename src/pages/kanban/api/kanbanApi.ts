@@ -41,6 +41,28 @@ export async function addCardToColumn(
   }
 }
 
+export async function updateCard(
+  cardId: string,
+  title: string,
+  description: string
+): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from("cards")
+      .update({
+        title,
+        description,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", cardId);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Error updating card:", error);
+    throw error;
+  }
+}
+
 export async function deleteCardById(cardId: string): Promise<void> {
   try {
     const { error } = await supabase.from("cards").delete().eq("id", cardId);

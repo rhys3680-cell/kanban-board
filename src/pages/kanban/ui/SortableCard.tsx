@@ -1,13 +1,30 @@
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Card } from "@/pages/kanban/model/types";
 
 interface SortableCardProps {
   card: Card;
+  isEditing: boolean;
+  onEdit: (cardId: string, title: string, description: string) => void;
   onDelete: (cardId: string) => void;
+  onStartEdit: (cardId: string) => void;
+  onCancelEdit: () => void;
 }
 
-export function SortableCard({ card, onDelete }: SortableCardProps) {
+export function SortableCard({
+  card,
+  isEditing,
+  onEdit,
+  onDelete,
+  onStartEdit,
+  onCancelEdit,
+}: SortableCardProps) {
+  const [editTitle, setEditTitle] = useState(card.title);
+  const [editDescription, setEditDescription] = useState(
+    card.description || ""
+  );
+
   const {
     attributes,
     listeners,
@@ -25,6 +42,51 @@ export function SortableCard({ card, onDelete }: SortableCardProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const handleSave = () => {
+    if (!editTitle.trim()) return;
+    onEdit(card.id, editTitle, editDescription);
+  };
+
+  if (isEditing) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="bg-white rounded-xl p-4 border-2 border-green-400 transition-all"
+      >
+        <div className="space-y-3">
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-semibold"
+            autoFocus
+          />
+          <textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all resize-none text-sm"
+            rows={3}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              className="flex-1 py-1.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all font-medium text-sm"
+            >
+              Save
+            </button>
+            <button
+              onClick={onCancelEdit}
+              className="flex-1 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={setNodeRef}
@@ -33,28 +95,29 @@ export function SortableCard({ card, onDelete }: SortableCardProps) {
       {...listeners}
       className="bg-white rounded-xl p-4 border border-gray-200 hover:border-green-400 hover:shadow-xl group relative cursor-move transition-all duration-200 hover:scale-[1.02]"
     >
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(card.id);
-        }}
-        className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 shadow-sm"
-        title="Delete card"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 transition-colors duration-200"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+      <div className="absolute top-3 right-3 flex gap-2 transition-opacity z-10">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onStartEdit(card.id);
+          }}
+          className="px-2 py-1 text-xs flex items-center justify-center text-gray-600 hover:text-white hover:bg-blue-500 rounded-md transition-all duration-200 shadow-sm font-medium"
+          title="Edit card"
         >
-          <path
-            fillRule="evenodd"
-            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      <h3 className="font-semibold text-gray-900 pr-8 leading-snug">
+          편집
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(card.id);
+          }}
+          className="px-2 py-1 text-xs flex items-center justify-center text-gray-600 hover:text-white hover:bg-red-500 rounded-md transition-all duration-200 shadow-sm font-medium"
+          title="Delete card"
+        >
+          삭제
+        </button>
+      </div>
+      <h3 className="font-semibold text-gray-900 pr-16 leading-snug">
         {card.title}
       </h3>
       {card.description && (

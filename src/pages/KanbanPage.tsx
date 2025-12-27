@@ -27,10 +27,13 @@ function KanbanBoard() {
     newCardDescription,
     showAddCard,
     activeCard,
+    editingCardId,
     setNewCardTitle,
     setNewCardDescription,
     setShowAddCard,
+    setEditingCardId,
     addCard,
+    editCard,
     deleteCard,
     handleDragStart,
     handleDragEnd,
@@ -67,16 +70,17 @@ function KanbanBoard() {
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-8 flex flex-col items-center">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 w-full">
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="p-8 pb-8 flex flex-col items-center w-full">
         <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-8">
           Kanban Board
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl w-full mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
           {columns.map((column) => {
             const headerColors = {
               0: "text-green-700",
@@ -102,7 +106,11 @@ function KanbanBoard() {
                       <SortableCard
                         key={card.id}
                         card={card}
+                        isEditing={editingCardId === card.id}
+                        onEdit={editCard}
                         onDelete={deleteCard}
+                        onStartEdit={setEditingCardId}
+                        onCancelEdit={() => setEditingCardId(null)}
                       />
                     ))}
                   </div>
@@ -141,7 +149,7 @@ function KanbanBoard() {
         </div>
 
         {/* Memo Section */}
-        <div className="max-w-7xl w-full">
+        <div className="w-full">
           <h2 className="text-2xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
             Memos
           </h2>
@@ -167,12 +175,13 @@ function KanbanBoard() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      <DragOverlay>
-        <CardDragOverlay card={activeCard} />
-      </DragOverlay>
-    </DndContext>
+        <DragOverlay>
+          <CardDragOverlay card={activeCard} />
+        </DragOverlay>
+      </DndContext>
+    </div>
   );
 }
 
