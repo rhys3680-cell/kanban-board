@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth } from "@/shared/contexts/AuthContext";
+import { AuthProvider, useAuth } from "./app/providers";
 import KanbanBoard from "@/pages/KanbanPage";
 import AuthPage from "@/pages/AuthPage";
 

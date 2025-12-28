@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@/shared/contexts/AuthContext";
+import { useAuth } from "@/app/providers";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -84,11 +84,7 @@ export default function AuthPage() {
             disabled={loading}
             className="w-full py-3 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading
-              ? "처리 중..."
-              : isLogin
-              ? "로그인"
-              : "회원가입"}
+            {loading ? "처리 중..." : isLogin ? "로그인" : "회원가입"}
           </button>
         </form>
 
