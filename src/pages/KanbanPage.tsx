@@ -81,21 +81,8 @@ function KanbanBoard() {
         <div className="p-8 pb-8 flex flex-col items-center w-full">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
             {columns.map((column) => {
-              const headerColors = {
-                0: "text-green-700",
-                1: "text-blue-700",
-                2: "text-purple-700",
-              };
-              const headerColor =
-                headerColors[column.position as keyof typeof headerColors] ||
-                "text-gray-700";
-
               return (
                 <DroppableColumn key={column.id} column={column}>
-                  <h2 className={`text-xl font-semibold ${headerColor} mb-4`}>
-                    {column.title}
-                  </h2>
-
                   <SortableContext
                     items={column.cards.map((c) => c.id)}
                     strategy={verticalListSortingStrategy}
