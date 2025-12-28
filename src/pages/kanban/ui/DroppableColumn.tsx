@@ -13,21 +13,12 @@ export function DroppableColumn({ column, children }: DroppableColumnProps) {
     id: column.id,
   });
 
-  // Assign colors based on column position (To Do = green, In Progress = blue, Done = purple)
-  const columnBgColors = {
-    0: "bg-green-50/50",
-    1: "bg-blue-50/50",
-    2: "bg-purple-50/50",
-  };
-
+  // Assign header text colors based on column position (To Do = green, In Progress = blue, Done = purple)
   const headerColors = {
     0: "text-green-700",
     1: "text-blue-700",
     2: "text-purple-700",
   };
-
-  const bgColorClass =
-    columnBgColors[column.position as keyof typeof columnBgColors] || "bg-background";
 
   const headerColorClass =
     headerColors[column.position as keyof typeof headerColors] || "text-foreground";
@@ -35,7 +26,7 @@ export function DroppableColumn({ column, children }: DroppableColumnProps) {
   return (
     <Card
       ref={setNodeRef}
-      className={cn("w-80 min-h-96 transition-colors", bgColorClass)}
+      className="w-80 min-h-96 transition-colors"
     >
       <CardHeader className="pb-3">
         <CardTitle className={cn("text-xl font-semibold", headerColorClass)}>
