@@ -2,6 +2,7 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -41,6 +42,12 @@ function KanbanBoard() {
       activationConstraint: {
         distance: 8,
       },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
     })
   );
 
@@ -59,8 +66,8 @@ function KanbanBoard() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="container mx-auto p-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+        <div className="container mx-auto px-4 py-6 md:p-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 justify-items-center">
             {columns.map((column) => {
               return (
                 <DroppableColumn key={column.id} column={column}>
