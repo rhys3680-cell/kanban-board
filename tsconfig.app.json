@@ -17,10 +17,13 @@
     "jsx": "react-jsx",
 
     /* Path Mapping */
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-
+    
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

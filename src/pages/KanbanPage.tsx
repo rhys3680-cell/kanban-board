@@ -11,6 +11,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useKanban } from "@/pages/kanban/hooks/useKanban";
 import { useMemos } from "@/pages/kanban/hooks/useMemos";
+import { useAuth } from "@/shared/contexts/AuthContext";
 import { SortableCard } from "@/pages/kanban/ui/SortableCard";
 import { DroppableColumn } from "@/pages/kanban/ui/DroppableColumn";
 import { AddCardForm } from "@/pages/kanban/ui/AddCardForm";
@@ -20,6 +21,8 @@ import { MemoFilters } from "@/pages/kanban/ui/MemoFilters";
 import { MemoList } from "@/pages/kanban/ui/MemoList";
 
 function KanbanBoard() {
+  const { user, signOut } = useAuth();
+
   const {
     columns,
     loading,
@@ -77,9 +80,20 @@ function KanbanBoard() {
         onDragEnd={handleDragEnd}
       >
         <div className="p-8 pb-8 flex flex-col items-center w-full">
-        <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-8">
-          Kanban Board
-        </h1>
+        <div className="w-full flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Kanban Board
+          </h1>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">{user?.email}</span>
+            <button
+              onClick={() => signOut()}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium text-sm"
+            >
+              로그아웃
+            </button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
           {columns.map((column) => {
             const headerColors = {

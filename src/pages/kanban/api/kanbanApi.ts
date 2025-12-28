@@ -27,11 +27,15 @@ export async function addCardToColumn(
   position: number
 ): Promise<void> {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
     const { error } = await supabase.from("cards").insert({
       column_id: columnId,
       title,
       description,
       position,
+      user_id: user.id,
     });
 
     if (error) throw error;
