@@ -29,12 +29,12 @@ export default function MemosPage() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto p-8">
-        <h2 className="text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-8">
+      <div className="container mx-auto px-4 py-6 md:p-8">
+        <h2 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 md:mb-8">
           Memos
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6">
             <MemoForm onSubmit={createMemo} />
             <MemoFilters
               searchQuery={searchQuery}

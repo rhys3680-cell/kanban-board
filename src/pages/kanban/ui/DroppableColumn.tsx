@@ -26,14 +26,14 @@ export function DroppableColumn({ column, children }: DroppableColumnProps) {
   return (
     <Card
       ref={setNodeRef}
-      className="w-80 min-h-96 transition-colors"
+      className="w-full md:w-80 min-h-96 transition-colors"
     >
-      <CardHeader className="pb-3">
-        <CardTitle className={cn("text-xl font-semibold", headerColorClass)}>
+      <CardHeader className="pb-2 md:pb-3">
+        <CardTitle className={cn("text-lg md:text-xl font-semibold", headerColorClass)}>
           {column.title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2 md:space-y-3">
         {children}
       </CardContent>
     </Card>

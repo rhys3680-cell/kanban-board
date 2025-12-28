@@ -16,52 +16,52 @@ export function Header() {
 
   return (
     <header className="border-b bg-background">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-8">
+      <div className="container mx-auto px-4 py-3 md:py-4">
+        <div className="flex items-center justify-between mb-3 md:mb-0">
           <Link to="/">
-            <h1 className="text-2xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer">
+            <h1 className="text-lg md:text-2xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer">
               Kanban Board
             </h1>
           </Link>
 
-          <nav className="flex items-center gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-
-              return (
-                <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={isActive ? "secondary" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "gap-2",
-                      isActive && "bg-primary/10 text-primary hover:bg-primary/20"
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
-                  </Button>
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="flex items-center gap-2 md:gap-4">
+            {user?.email && (
+              <span className="text-xs md:text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={signOut}
+              className="gap-1 md:gap-2 h-8 md:h-9 text-xs md:text-sm"
+            >
+              <LogOut className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">로그아웃</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          {user?.email && (
-            <span className="text-sm text-muted-foreground">{user.email}</span>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={signOut}
-            className="gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            로그아웃
-          </Button>
-        </div>
+        <nav className="flex items-center gap-1 md:gap-2 overflow-x-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+
+            return (
+              <Link key={item.path} to={item.path}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  size="sm"
+                  className={cn(
+                    "gap-1 md:gap-2 h-8 md:h-9 text-xs md:text-sm whitespace-nowrap",
+                    isActive && "bg-primary/10 text-primary hover:bg-primary/20"
+                  )}
+                >
+                  <Icon className="h-3 w-3 md:h-4 md:w-4" />
+                  {item.label}
+                </Button>
+              </Link>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
