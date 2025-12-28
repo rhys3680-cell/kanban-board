@@ -1,3 +1,7 @@
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+
 interface AddCardFormProps {
   title: string;
   description: string;
@@ -15,46 +19,46 @@ export function AddCardForm({
   onSubmit,
   onCancel,
 }: AddCardFormProps) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="space-y-2">
-      <input
+    <div className="space-y-3">
+      <Input
         type="text"
         placeholder="Card title..."
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            onCancel();
-          }
-        }}
-        className="w-full px-3 py-2 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+        onKeyDown={handleKeyDown}
         autoFocus
       />
-      <textarea
+      <Textarea
         placeholder="Description (optional)..."
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            onCancel();
-          }
-        }}
-        className="w-full px-3 py-2 border-2 border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all resize-none"
+        onKeyDown={handleKeyDown}
+        className="resize-none"
         rows={3}
       />
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={onSubmit}
-          className="px-4 py-1.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-md hover:from-green-600 hover:to-green-700 shadow-sm hover:shadow-md transition-all"
+          size="sm"
+          className="flex-1"
         >
           Add
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="px-4 py-1.5 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-all"
+          variant="outline"
+          size="sm"
+          className="flex-1"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

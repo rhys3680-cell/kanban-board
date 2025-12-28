@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
+import MDEditor from "@uiw/react-md-editor";
 
 interface MemoFormProps {
   onSubmit: (title: string, content: string) => void;
@@ -7,6 +11,7 @@ interface MemoFormProps {
 export function MemoForm({ onSubmit }: MemoFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = () => {
     if (!title.trim()) return;
@@ -15,41 +20,55 @@ export function MemoForm({ onSubmit }: MemoFormProps) {
     setContent("");
   };
 
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.ctrlKey) {
+      e.preventDefault();
+      // MDEditor의 textarea로 포커스 이동
+      const textarea = editorRef.current?.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+      }
+    } else if (e.key === "Enter" && e.ctrlKey) {
+      handleSubmit();
+    }
+  };
+
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">New Memo</h3>
-      <div className="space-y-3">
-        <input
+    <Card>
+      <CardHeader>
+        <CardTitle>New Memo</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Input
           type="text"
           placeholder="Title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.ctrlKey) {
-              handleSubmit();
-            }
-          }}
-          className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+          onKeyDown={handleTitleKeyDown}
         />
-        <textarea
-          placeholder="Content..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.ctrlKey) {
-              handleSubmit();
-            }
-          }}
-          className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all resize-none"
-          rows={4}
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full py-2.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all font-medium"
-        >
+        <div data-color-mode="light" ref={editorRef}>
+          <MDEditor
+            value={content}
+            onChange={(val) => setContent(val || "")}
+            preview="live"
+            height={300}
+            textareaProps={{
+              placeholder: "Content... (Markdown supported)",
+              onKeyDown: handleEditorKeyDown
+            }}
+          />
+        </div>
+        <Button onClick={handleSubmit} className="w-full">
           Add Memo (Ctrl + Enter)
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardContent>
+    </Card>
   );
 }

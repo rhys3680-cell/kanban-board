@@ -1,111 +1,110 @@
 import { useState } from "react";
-import { useAuth } from "@/shared/contexts/AuthContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useAuth } from "@/app/providers";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Field, FieldError } from "@/shared/ui/field";
+import { authSchema, type AuthFormValues } from "./auth/schema";
+import { getAuthErrorMessage } from "./auth/errorMessages";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<AuthFormValues>({
+    resolver: zodResolver(authSchema),
+  });
 
+  const onSubmit = async (data: AuthFormValues) => {
     try {
       if (isLogin) {
-        await signIn(email, password);
+        await signIn(data.email, data.password);
+        toast.success("로그인 성공!");
       } else {
-        await signUp(email, password);
-        alert("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+        await signUp(data.email, data.password);
+        toast.success("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
       }
-    } catch (err: any) {
-      setError(err.message || "오류가 발생했습니다.");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      toast.error(getAuthErrorMessage(err));
     }
   };
 
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    reset();
+  };
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-8">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-2 bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Kanban Board
-        </h1>
-        <p className="text-center text-gray-500 mb-8">
-          {isLogin ? "로그인하여 시작하세요" : "새 계정을 만드세요"}
-        </p>
+    <div className="min-h-screen w-full bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center p-8">
+      <Card className="w-full max-w-lg">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-3xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Kanban Board
+          </CardTitle>
+          <CardDescription>
+            {isLogin ? "로그인하여 시작하세요" : "새 계정을 만드세요"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Field data-invalid={!!errors.email}>
+              <Label htmlFor="email">이메일</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                {...register("email")}
+              />
+              <FieldError>{errors.email?.message}</FieldError>
+            </Field>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              이메일
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-              placeholder="your@email.com"
-            />
+            <Field data-invalid={!!errors.password}>
+              <Label htmlFor="password">비밀번호</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                {...register("password")}
+              />
+              <FieldError>{errors.password?.message}</FieldError>
+              {!isLogin && !errors.password && (
+                <p className="text-xs text-muted-foreground">
+                  최소 6자 이상이어야 합니다
+                </p>
+              )}
+            </Field>
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full"
+            >
+              {isSubmitting ? "처리 중..." : isLogin ? "로그인" : "회원가입"}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <Button
+              variant="link"
+              onClick={toggleMode}
+              className="text-sm"
+            >
+              {isLogin
+                ? "계정이 없으신가요? 회원가입"
+                : "이미 계정이 있으신가요? 로그인"}
+            </Button>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              비밀번호
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
-              placeholder="••••••••"
-            />
-            {!isLogin && (
-              <p className="text-xs text-gray-500 mt-1">
-                최소 6자 이상이어야 합니다
-              </p>
-            )}
-          </div>
-
-          {error && (
-            <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading
-              ? "처리 중..."
-              : isLogin
-              ? "로그인"
-              : "회원가입"}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError("");
-            }}
-            className="text-sm text-gray-600 hover:text-green-600 transition-colors"
-          >
-            {isLogin
-              ? "계정이 없으신가요? 회원가입"
-              : "이미 계정이 있으신가요? 로그인"}
-          </button>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

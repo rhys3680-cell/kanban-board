@@ -1,6 +1,10 @@
-import { AuthProvider, useAuth } from "@/shared/contexts/AuthContext";
-import KanbanBoard from "@/pages/KanbanPage";
+import { AuthProvider, useAuth, QueryProvider } from "./app/providers";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import DashboardPage from "@/pages/DashboardPage";
+import KanbanPage from "@/pages/KanbanPage";
+import MemosPage from "@/pages/MemosPage";
 import AuthPage from "@/pages/AuthPage";
+import { Toaster } from "@/shared/ui/sonner";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -13,14 +17,30 @@ function AppContent() {
     );
   }
 
-  return user ? <KanbanBoard /> : <AuthPage />;
+  if (!user) {
+    return <AuthPage />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<DashboardPage />} />
+      <Route path="/kanban" element={<KanbanPage />} />
+      <Route path="/memos" element={<MemosPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppContent />
+          <Toaster position="top-right" />
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryProvider>
   );
 }
 

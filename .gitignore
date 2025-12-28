@@ -28,3 +28,6 @@ dist-ssr
 
 # 테스트 폴더 
 playground
+
+# 클로드 파일 
+CLAUDE.md
