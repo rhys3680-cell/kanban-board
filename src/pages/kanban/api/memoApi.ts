@@ -22,9 +22,13 @@ export async function addMemo(
   content: string
 ): Promise<void> {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
     const { error } = await supabase.from("memos").insert({
       title,
       content,
+      user_id: user.id,
     });
 
     if (error) throw error;

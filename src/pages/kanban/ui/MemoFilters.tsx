@@ -1,3 +1,15 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Button } from "@/shared/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { Calendar } from "@/shared/ui/calendar";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/shared/libs/utils";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+
 interface MemoFiltersProps {
   searchQuery: string;
   selectedDate: string;
@@ -11,45 +23,73 @@ export function MemoFilters({
   onSearchChange,
   onDateChange,
 }: MemoFiltersProps) {
+  const [date, setDate] = useState<Date | undefined>(
+    selectedDate ? new Date(selectedDate) : undefined
+  );
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (selectedDate) {
+      onDateChange(format(selectedDate, "yyyy-MM-dd"));
+    } else {
+      onDateChange("");
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Filters</h3>
-      <div className="space-y-3">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Search
-          </label>
-          <input
+    <Card>
+      <CardHeader>
+        <CardTitle>Filters</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="search">Search</Label>
+          <Input
+            id="search"
             type="text"
             placeholder="Search by title or content..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Filter by Date
-          </label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => onDateChange(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
-          />
+        <div className="space-y-2">
+          <Label>Filter by Date</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP", { locale: ko }) : "날짜 선택"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={handleDateSelect}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         {(searchQuery || selectedDate) && (
-          <button
+          <Button
+            variant="outline"
+            className="w-full"
             onClick={() => {
               onSearchChange("");
               onDateChange("");
+              setDate(undefined);
             }}
-            className="w-full py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium"
           >
             Clear Filters
-          </button>
+          </Button>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,5 +1,6 @@
 import type { Memo } from "@/pages/kanban/model/types";
 import { MemoItem } from "./MemoItem";
+import { Card, CardContent } from "@/shared/ui/card";
 
 interface MemoListProps {
   memos: Memo[];
@@ -20,9 +21,11 @@ export function MemoList({
 }: MemoListProps) {
   if (memos.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-12 shadow-lg border-2 border-gray-200 text-center">
-        <p className="text-gray-400 text-lg">No memos found</p>
-      </div>
+      <Card>
+        <CardContent className="p-12 text-center">
+          <p className="text-muted-foreground text-lg">No memos found</p>
+        </CardContent>
+      </Card>
     );
   }
 

@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Card } from "@/pages/kanban/model/types";
+import type { Card as CardType } from "@/pages/kanban/model/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
+import { MoreVertical, Pencil, Trash2, GripVertical } from "lucide-react";
+import { cn } from "@/shared/libs/utils";
 
 interface SortableCardProps {
-  card: Card;
+  card: CardType;
   isEditing: boolean;
   onEdit: (cardId: string, title: string, description: string) => void;
   onDelete: (cardId: string) => void;
@@ -49,82 +56,110 @@ export function SortableCard({
 
   if (isEditing) {
     return (
-      <div
+      <Card
         ref={setNodeRef}
         style={style}
-        className="bg-white rounded-xl p-4 border-2 border-green-400 transition-all"
+        className="border-2 border-primary"
       >
-        <div className="space-y-3">
-          <input
+        <CardContent className="pt-6 space-y-3">
+          <Input
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all font-semibold"
+            className="font-semibold"
             autoFocus
           />
-          <textarea
+          <Textarea
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
-            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all resize-none text-sm"
+            className="resize-none text-sm"
             rows={3}
           />
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={handleSave}
-              className="flex-1 py-1.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all font-medium text-sm"
+              size="sm"
+              className="flex-1"
             >
               Save
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={onCancelEdit}
-              className="flex-1 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium text-sm"
+              variant="outline"
+              size="sm"
+              className="flex-1"
             >
               Cancel
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div
+    <Card
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
-      className="bg-white rounded-xl p-4 border border-gray-200 hover:border-green-400 hover:shadow-xl group relative cursor-move transition-all duration-200 hover:scale-[1.02]"
-    >
-      <div className="absolute top-3 right-3 flex gap-2 transition-opacity z-10">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onStartEdit(card.id);
-          }}
-          className="px-2 py-1 text-xs flex items-center justify-center text-gray-600 hover:text-white hover:bg-blue-500 rounded-md transition-all duration-200 shadow-sm font-medium"
-          title="Edit card"
-        >
-          편집
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(card.id);
-          }}
-          className="px-2 py-1 text-xs flex items-center justify-center text-gray-600 hover:text-white hover:bg-red-500 rounded-md transition-all duration-200 shadow-sm font-medium"
-          title="Delete card"
-        >
-          삭제
-        </button>
-      </div>
-      <h3 className="font-semibold text-gray-900 pr-16 leading-snug">
-        {card.title}
-      </h3>
-      {card.description && (
-        <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-          {card.description}
-        </p>
+      className={cn(
+        "transition-all duration-200 hover:shadow-lg group",
+        isDragging && "opacity-50"
       )}
-    </div>
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-2">
+          <button
+            {...attributes}
+            {...listeners}
+            className="touch-none cursor-grab active:cursor-grabbing p-1 -ml-1 text-muted-foreground hover:text-foreground transition-colors md:opacity-0 md:group-hover:opacity-100"
+          >
+            <GripVertical className="h-5 w-5" />
+          </button>
+          <CardTitle className="text-base leading-snug flex-1">
+            {card.title}
+          </CardTitle>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStartEdit(card.id);
+                }}
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                편집
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(card.id);
+                }}
+                className="text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                삭제
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      {card.description && (
+        <CardContent className="pt-0">
+          <CardDescription className="text-sm leading-relaxed">
+            {card.description}
+          </CardDescription>
+        </CardContent>
+      )}
+    </Card>
   );
 }
