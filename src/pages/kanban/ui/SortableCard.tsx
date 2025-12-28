@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, GripVertical } from "lucide-react";
 import { cn } from "@/shared/libs/utils";
 
 interface SortableCardProps {
@@ -101,15 +101,20 @@ export function SortableCard({
     <Card
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
       className={cn(
-        "cursor-move transition-all duration-200 hover:shadow-lg group",
+        "transition-all duration-200 hover:shadow-lg group",
         isDragging && "opacity-50"
       )}
     >
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start gap-2">
+          <button
+            {...attributes}
+            {...listeners}
+            className="touch-none cursor-grab active:cursor-grabbing p-1 -ml-1 text-muted-foreground hover:text-foreground transition-colors md:opacity-0 md:group-hover:opacity-100"
+          >
+            <GripVertical className="h-5 w-5" />
+          </button>
           <CardTitle className="text-base leading-snug flex-1">
             {card.title}
           </CardTitle>
