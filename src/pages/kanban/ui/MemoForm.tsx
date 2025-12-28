@@ -33,6 +33,13 @@ export function MemoForm({ onSubmit }: MemoFormProps) {
     }
   };
 
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -53,7 +60,8 @@ export function MemoForm({ onSubmit }: MemoFormProps) {
             preview="live"
             height={300}
             textareaProps={{
-              placeholder: "Content... (Markdown supported)"
+              placeholder: "Content... (Markdown supported)",
+              onKeyDown: handleEditorKeyDown
             }}
           />
         </div>

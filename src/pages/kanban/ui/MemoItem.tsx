@@ -46,6 +46,13 @@ export function MemoItem({
     }
   };
 
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("ko-KR", {
@@ -75,6 +82,9 @@ export function MemoItem({
               onChange={(val) => setEditContent(val || "")}
               preview="live"
               height={300}
+              textareaProps={{
+                onKeyDown: handleEditorKeyDown
+              }}
             />
           </div>
           <div className="flex gap-2">
