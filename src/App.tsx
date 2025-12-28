@@ -1,6 +1,7 @@
 import { AuthProvider, useAuth, QueryProvider } from "./app/providers";
 import KanbanBoard from "@/pages/KanbanPage";
 import AuthPage from "@/pages/AuthPage";
+import { Toaster } from "@/shared/ui/sonner";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -21,6 +22,7 @@ function App() {
     <QueryProvider>
       <AuthProvider>
         <AppContent />
+        <Toaster position="top-right" />
       </AuthProvider>
     </QueryProvider>
   );
