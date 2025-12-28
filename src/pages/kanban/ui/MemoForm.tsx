@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
 import { Button } from "@/shared/ui/button";
+import MDEditor from "@uiw/react-md-editor";
 
 interface MemoFormProps {
   onSubmit: (title: string, content: string) => void;
@@ -11,12 +11,26 @@ interface MemoFormProps {
 export function MemoForm({ onSubmit }: MemoFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = () => {
     if (!title.trim()) return;
     onSubmit(title, content);
     setTitle("");
     setContent("");
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.ctrlKey) {
+      e.preventDefault();
+      // MDEditor의 textarea로 포커스 이동
+      const textarea = editorRef.current?.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+      }
+    } else if (e.key === "Enter" && e.ctrlKey) {
+      handleSubmit();
+    }
   };
 
   return (
@@ -30,24 +44,19 @@ export function MemoForm({ onSubmit }: MemoFormProps) {
           placeholder="Title..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.ctrlKey) {
-              handleSubmit();
-            }
-          }}
+          onKeyDown={handleTitleKeyDown}
         />
-        <Textarea
-          placeholder="Content..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.ctrlKey) {
-              handleSubmit();
-            }
-          }}
-          className="resize-none"
-          rows={4}
-        />
+        <div data-color-mode="light" ref={editorRef}>
+          <MDEditor
+            value={content}
+            onChange={(val) => setContent(val || "")}
+            preview="live"
+            height={300}
+            textareaProps={{
+              placeholder: "Content... (Markdown supported)"
+            }}
+          />
+        </div>
         <Button onClick={handleSubmit} className="w-full">
           Add Memo (Ctrl + Enter)
         </Button>

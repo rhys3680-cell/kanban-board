@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Memo } from "@/pages/kanban/model/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
 import { Button } from "@/shared/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import MDEditor from "@uiw/react-md-editor";
 
 interface MemoItemProps {
   memo: Memo;
@@ -26,10 +26,24 @@ export function MemoItem({
 }: MemoItemProps) {
   const [editTitle, setEditTitle] = useState(memo.title);
   const [editContent, setEditContent] = useState(memo.content);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const handleSave = () => {
     if (!editTitle.trim()) return;
     onEdit(memo.id, editTitle, editContent);
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.ctrlKey) {
+      e.preventDefault();
+      // MDEditor의 textarea로 포커스 이동
+      const textarea = editorRef.current?.querySelector('textarea');
+      if (textarea) {
+        textarea.focus();
+      }
+    } else if (e.key === "Enter" && e.ctrlKey) {
+      handleSave();
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -51,15 +65,18 @@ export function MemoItem({
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
+            onKeyDown={handleTitleKeyDown}
             className="font-semibold"
             autoFocus
           />
-          <Textarea
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            className="resize-none"
-            rows={4}
-          />
+          <div data-color-mode="light" ref={editorRef}>
+            <MDEditor
+              value={editContent}
+              onChange={(val) => setEditContent(val || "")}
+              preview="live"
+              height={300}
+            />
+          </div>
           <div className="flex gap-2">
             <Button onClick={handleSave} className="flex-1">
               Save
@@ -108,9 +125,9 @@ export function MemoItem({
       </CardHeader>
       {memo.content && (
         <CardContent className="pt-0 space-y-3">
-          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-            {memo.content}
-          </p>
+          <div data-color-mode="light">
+            <MDEditor.Markdown source={memo.content} className="bg-transparent!" />
+          </div>
           <div className="text-sm text-muted-foreground">
             {formatDate(memo.created_at)}
           </div>
