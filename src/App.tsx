@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth } from "./app/providers";
+import { AuthProvider, useAuth, QueryProvider } from "./app/providers";
 import KanbanBoard from "@/pages/KanbanPage";
 import AuthPage from "@/pages/AuthPage";
 
@@ -18,9 +18,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </QueryProvider>
   );
 }
 
