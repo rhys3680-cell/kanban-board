@@ -1,6 +1,6 @@
 import { useAuth } from "@/app/providers";
 import { Button } from "@/shared/ui/button";
-import { LogOut, LayoutDashboard, LayoutGrid, StickyNote } from "lucide-react";
+import { LogOut, LayoutDashboard, LayoutGrid, StickyNote, Tag } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/shared/libs/utils";
 
@@ -12,6 +12,7 @@ export function Header() {
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/kanban", label: "Kanban", icon: LayoutGrid },
     { path: "/memos", label: "Memos", icon: StickyNote },
+    { path: "/tags", label: "Tags", icon: Tag },
   ];
 
   return (
