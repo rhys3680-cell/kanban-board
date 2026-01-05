@@ -93,10 +93,15 @@ export function useKanban() {
     const { active, over } = event;
     setActiveCard(null);
 
-    if (!over) return;
+    if (!over) {
+      console.log("No drop target found");
+      return;
+    }
 
     const activeCardId = active.id as string;
     const overColumnId = over.id as string;
+
+    console.log("Drag end:", { activeCardId, overColumnId });
 
     let activeCard: Card | undefined;
     let sourceColumn: Column | undefined;
@@ -110,12 +115,19 @@ export function useKanban() {
       }
     }
 
-    if (!activeCard || !sourceColumn) return;
+    if (!activeCard || !sourceColumn) {
+      console.log("Card or source column not found");
+      return;
+    }
 
     const targetColumn = columns.find((col) => col.id === overColumnId);
-    if (!targetColumn) return;
+    if (!targetColumn) {
+      console.log("Target column not found:", overColumnId);
+      return;
+    }
 
     if (sourceColumn.id !== targetColumn.id) {
+      console.log("Moving card to different column");
       try {
         const newPosition = targetColumn.cards.length;
         await moveCardToColumn(activeCardId, targetColumn.id, newPosition);
@@ -123,6 +135,8 @@ export function useKanban() {
       } catch (error) {
         console.error("Error moving card:", error);
       }
+    } else {
+      console.log("Card dropped in same column");
     }
   }
 
