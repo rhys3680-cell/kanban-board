@@ -25,20 +25,16 @@ interface SupabaseError extends Error {
 
 export function getAuthErrorMessage(error: unknown): string {
   if (error instanceof Error) {
-    // Supabase error 객체 처리
     const supabaseError = error as SupabaseError;
 
-    // code 필드가 있는 경우
     if (supabaseError.code && authErrorMessages[supabaseError.code]) {
       return authErrorMessages[supabaseError.code];
     }
 
-    // message 필드로 매칭
     if (error.message && authErrorMessages[error.message]) {
       return authErrorMessages[error.message];
     }
 
-    // message에 키워드가 포함되어 있는 경우
     for (const [key, value] of Object.entries(authErrorMessages)) {
       if (error.message.includes(key)) {
         return value;

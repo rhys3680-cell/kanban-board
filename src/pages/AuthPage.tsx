@@ -8,8 +8,7 @@ import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Field, FieldError } from "@/shared/ui/field";
-import { authSchema, type AuthFormValues } from "./auth/schema";
-import { getAuthErrorMessage } from "./auth/errorMessages";
+import { authSchema, type AuthFormValues, getAuthErrorMessage } from "@/features/auth";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
