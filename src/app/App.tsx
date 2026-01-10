@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth, QueryProvider, ErrorBoundaryProvider } from "./app/providers";
+import { AuthProvider, useAuth, QueryProvider, ErrorBoundaryProvider } from "./providers";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "@/pages/DashboardPage";
 import KanbanPage from "@/pages/KanbanPage";
