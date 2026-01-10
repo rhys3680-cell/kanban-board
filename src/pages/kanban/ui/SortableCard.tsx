@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Card as CardType } from "@/pages/kanban/model/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import type { Card as CardType } from "@/entities/kanban";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu";
 import { MoreVertical, Pencil, Trash2, GripVertical } from "lucide-react";
 import { cn } from "@/shared/libs/utils";
 
@@ -56,11 +67,7 @@ export function SortableCard({
 
   if (isEditing) {
     return (
-      <Card
-        ref={setNodeRef}
-        style={style}
-        className="border-2 border-primary"
-      >
+      <Card ref={setNodeRef} style={style} className="border-2 border-primary">
         <CardContent className="pt-6 space-y-3">
           <Input
             type="text"
@@ -76,11 +83,7 @@ export function SortableCard({
             rows={3}
           />
           <div className="flex gap-2">
-            <Button
-              onClick={handleSave}
-              size="sm"
-              className="flex-1"
-            >
+            <Button onClick={handleSave} size="sm" className="flex-1">
               Save
             </Button>
             <Button
