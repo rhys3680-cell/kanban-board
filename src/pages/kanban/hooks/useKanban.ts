@@ -99,10 +99,11 @@ export function useKanban() {
     }
 
     const activeCardId = active.id as string;
-    const overColumnId = over.id as string;
+    const overId = over.id as string;
 
-    console.log("Drag end:", { activeCardId, overColumnId });
+    console.log("Drag end:", { activeCardId, overId });
 
+    // Find the active card and its source column
     let activeCard: Card | undefined;
     let sourceColumn: Column | undefined;
 
@@ -120,14 +121,27 @@ export function useKanban() {
       return;
     }
 
-    const targetColumn = columns.find((col) => col.id === overColumnId);
+    // Find target column - overId could be either a column ID or a card ID
+    let targetColumn: Column | undefined = columns.find((col) => col.id === overId);
+
+    // If not found as column, check if it's a card and get its column
     if (!targetColumn) {
-      console.log("Target column not found:", overColumnId);
+      for (const column of columns) {
+        if (column.cards.find((c) => c.id === overId)) {
+          targetColumn = column;
+          break;
+        }
+      }
+    }
+
+    if (!targetColumn) {
+      console.log("Target column not found for overId:", overId);
+      console.log("Available columns:", columns.map(c => ({ id: c.id, title: c.title })));
       return;
     }
 
     if (sourceColumn.id !== targetColumn.id) {
-      console.log("Moving card to different column");
+      console.log("Moving card to different column:", targetColumn.title);
       try {
         const newPosition = targetColumn.cards.length;
         await moveCardToColumn(activeCardId, targetColumn.id, newPosition);

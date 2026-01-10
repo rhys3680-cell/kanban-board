@@ -3,6 +3,7 @@ import type { Memo } from "@/pages/kanban/model/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/ui/dropdown-menu";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import MDEditor from "@uiw/react-md-editor";
@@ -104,9 +105,20 @@ export function MemoItem({
     <Card className="group hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-lg leading-snug flex-1">
-            {memo.title}
-          </CardTitle>
+          <div className="flex-1">
+            <CardTitle className="text-lg leading-snug">
+              {memo.title}
+            </CardTitle>
+            {memo.tags && memo.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {memo.tags.map((memoTag) => (
+                  <Badge key={memoTag.id} variant="secondary" className="text-xs">
+                    {memoTag.tag?.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

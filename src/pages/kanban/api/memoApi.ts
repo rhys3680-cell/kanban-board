@@ -20,18 +20,19 @@ export async function fetchMemos(): Promise<Memo[]> {
 export async function addMemo(
   title: string,
   content: string
-): Promise<void> {
+): Promise<string> {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase.from("memos").insert({
+    const { data, error } = await supabase.from("memos").insert({
       title,
       content,
       user_id: user.id,
-    });
+    }).select().single();
 
     if (error) throw error;
+    return data.id;
   } catch (error) {
     console.error("Error adding memo:", error);
     throw error;

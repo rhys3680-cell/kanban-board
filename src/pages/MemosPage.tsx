@@ -10,9 +10,11 @@ export default function MemosPage() {
     loading,
     searchQuery,
     selectedDate,
+    selectedTagIds,
     editingMemoId,
     setSearchQuery,
     setSelectedDate,
+    setSelectedTagIds,
     setEditingMemoId,
     createMemo,
     editMemo,
@@ -39,8 +41,10 @@ export default function MemosPage() {
             <MemoFilters
               searchQuery={searchQuery}
               selectedDate={selectedDate}
+              selectedTagIds={selectedTagIds}
               onSearchChange={setSearchQuery}
               onDateChange={setSelectedDate}
+              onTagsChange={setSelectedTagIds}
             />
           </div>
           <div className="lg:col-span-2">

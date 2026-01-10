@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import type { Memo } from "@/pages/kanban/model/types";
 import {
-  fetchMemos,
   addMemo,
   updateMemo,
   deleteMemo,
 } from "@/pages/kanban/api/memoApi";
+import { fetchMemosWithTags, updateMemoTags } from "@/entities/tag";
 
 export function useMemos() {
   const [memos, setMemos] = useState<Memo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [editingMemoId, setEditingMemoId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export function useMemos() {
 
   async function fetchData() {
     try {
-      const data = await fetchMemos();
+      const data = await fetchMemosWithTags();
       setMemos(data);
     } catch (error) {
       console.error("Error fetching memos:", error);
@@ -29,22 +30,28 @@ export function useMemos() {
     }
   }
 
-  async function createMemo(title: string, content: string) {
+  async function createMemo(title: string, content: string, tagIds?: string[]) {
     if (!title.trim()) return;
 
     try {
-      await addMemo(title, content);
+      const memoId = await addMemo(title, content);
+      if (tagIds && tagIds.length > 0) {
+        await updateMemoTags(memoId, tagIds);
+      }
       await fetchData();
     } catch (error) {
       console.error("Error creating memo:", error);
     }
   }
 
-  async function editMemo(id: string, title: string, content: string) {
+  async function editMemo(id: string, title: string, content: string, tagIds?: string[]) {
     if (!title.trim()) return;
 
     try {
       await updateMemo(id, title, content);
+      if (tagIds !== undefined) {
+        await updateMemoTags(id, tagIds);
+      }
       await fetchData();
       setEditingMemoId(null);
     } catch (error) {
@@ -71,7 +78,13 @@ export function useMemos() {
       selectedDate === "" ||
       memo.created_at.startsWith(selectedDate);
 
-    return matchesSearch && matchesDate;
+    const matchesTags =
+      selectedTagIds.length === 0 ||
+      selectedTagIds.some((tagId) =>
+        memo.tags?.some((mt) => mt.tag?.id === tagId)
+      );
+
+    return matchesSearch && matchesDate && matchesTags;
   });
 
   return {
@@ -79,9 +92,11 @@ export function useMemos() {
     loading,
     searchQuery,
     selectedDate,
+    selectedTagIds,
     editingMemoId,
     setSearchQuery,
     setSelectedDate,
+    setSelectedTagIds,
     setEditingMemoId,
     createMemo,
     editMemo,
