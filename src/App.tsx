@@ -1,4 +1,4 @@
-import { AuthProvider, useAuth, QueryProvider } from "./app/providers";
+import { AuthProvider, useAuth, QueryProvider, ErrorBoundaryProvider } from "./app/providers";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "@/pages/DashboardPage";
 import KanbanPage from "@/pages/KanbanPage";
@@ -35,14 +35,16 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AppContent />
-          <Toaster position="top-right" />
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryProvider>
+    <ErrorBoundaryProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppContent />
+            <Toaster position="top-right" />
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryProvider>
+    </ErrorBoundaryProvider>
   );
 }
 
