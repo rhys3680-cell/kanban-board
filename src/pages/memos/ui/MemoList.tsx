@@ -1,11 +1,11 @@
-import type { Memo } from "@/pages/kanban/model/types";
+import type { Memo } from "@/entities/memo";
 import { MemoItem } from "./MemoItem";
 import { Card, CardContent } from "@/shared/ui/card";
 
 interface MemoListProps {
   memos: Memo[];
   editingMemoId: string | null;
-  onEdit: (id: string, title: string, content: string) => void;
+  onEdit: (id: string, title: string, content: string, tagIds: string[]) => void;
   onDelete: (id: string) => void;
   onStartEdit: (id: string) => void;
   onCancelEdit: () => void;

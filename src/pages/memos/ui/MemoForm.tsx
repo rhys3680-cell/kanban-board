@@ -9,7 +9,7 @@ import { X } from "lucide-react";
 import type { Tag } from "@/entities/memo/model/types";
 
 interface MemoFormProps {
-  onSubmit: (title: string, content: string, tagIds?: string[]) => void;
+  onSubmit: (title: string, content: string, tagIds: string[]) => void;
 }
 
 export function MemoForm({ onSubmit }: MemoFormProps) {
