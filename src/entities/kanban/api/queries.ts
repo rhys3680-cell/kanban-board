@@ -11,7 +11,7 @@ import {
 // Query: Kanban 데이터 가져오기
 export function useKanbanQuery() {
   return useQuery({
-    queryKey: queryKeys.columns(),
+    queryKey: queryKeys.kanban,
     queryFn: fetchKanbanData,
   });
 }
