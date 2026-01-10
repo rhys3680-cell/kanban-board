@@ -1,56 +1,28 @@
-import { useState, useEffect } from "react";
 import type { Tag } from "@/entities/memo/model/types";
-import { fetchTags, createTag, updateTag, deleteTag } from "@/entities/tag";
+import {
+  useTagsQuery,
+  useCreateTagMutation,
+  useUpdateTagMutation,
+  useDeleteTagMutation,
+} from "@/entities/tag/api/queries";
 
 export function useTags() {
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: tags = [], isLoading: loading, refetch } = useTagsQuery();
+  const createTagMutation = useCreateTagMutation();
+  const updateTagMutation = useUpdateTagMutation();
+  const deleteTagMutation = useDeleteTagMutation();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const addTag = async (name: string, color?: string): Promise<Tag> => {
+    return createTagMutation.mutateAsync({ name, color });
+  };
 
-  async function fetchData() {
-    try {
-      const data = await fetchTags();
-      setTags(data);
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const editTag = async (id: string, updates: Partial<Pick<Tag, "name" | "color">>) => {
+    return updateTagMutation.mutateAsync({ id, updates });
+  };
 
-  async function addTag(name: string, color?: string): Promise<Tag> {
-    try {
-      const newTag = await createTag(name, color);
-      await fetchData();
-      return newTag;
-    } catch (error) {
-      console.error("Error creating tag:", error);
-      throw error;
-    }
-  }
-
-  async function editTag(id: string, updates: Partial<Pick<Tag, "name" | "color">>) {
-    try {
-      await updateTag(id, updates);
-      await fetchData();
-    } catch (error) {
-      console.error("Error updating tag:", error);
-      throw error;
-    }
-  }
-
-  async function removeTag(id: string) {
-    try {
-      await deleteTag(id);
-      await fetchData();
-    } catch (error) {
-      console.error("Error deleting tag:", error);
-      throw error;
-    }
-  }
+  const removeTag = async (id: string) => {
+    return deleteTagMutation.mutateAsync(id);
+  };
 
   return {
     tags,
@@ -58,6 +30,6 @@ export function useTags() {
     addTag,
     editTag,
     removeTag,
-    refetch: fetchData,
+    refetch,
   };
 }
