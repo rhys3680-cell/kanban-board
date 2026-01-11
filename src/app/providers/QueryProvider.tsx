@@ -12,9 +12,11 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             gcTime: 1000 * 60 * 5, // 5분
             retry: 1,
             refetchOnWindowFocus: false,
+            throwOnError: true, // Error Boundary로 에러 전파
           },
           mutations: {
             retry: 1,
+            throwOnError: true, // Error Boundary로 에러 전파
           },
         },
       })

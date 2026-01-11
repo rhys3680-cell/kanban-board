@@ -1,5 +1,7 @@
-import { useKanban } from "@/pages/kanban/hooks/useKanban";
-import { useMemos } from "@/pages/kanban/hooks/useMemos";
+import { useKanbanBoard } from "@/features/kanban/hooks/useKanbanBoard";
+import { useMemosWithFilters } from "@/features/memos/hooks/useMemosWithFilters";
+import type { Column } from "@/entities/kanban";
+import type { Memo } from "@/entities/memo";
 import { MainLayout } from "@/app/layouts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
@@ -7,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { LayoutGrid, StickyNote, ArrowRight } from "lucide-react";
 
 export default function DashboardPage() {
-  const { columns, loading: kanbanLoading } = useKanban();
-  const { memos, loading: memosLoading } = useMemos();
+  const { columns, loading: kanbanLoading } = useKanbanBoard();
+  const { memos, loading: memosLoading } = useMemosWithFilters();
   const navigate = useNavigate();
 
   if (kanbanLoading || memosLoading) {
@@ -19,18 +21,18 @@ export default function DashboardPage() {
     );
   }
 
-  const totalCards = columns.reduce((acc, col) => acc + col.cards.length, 0);
+  const totalCards = columns.reduce((acc: number, col: Column) => acc + col.cards.length, 0);
   const recentMemos = memos.slice(0, 5);
 
   // 메모 통계
   const totalMemos = memos.length;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayMemos = memos.filter(m => new Date(m.created_at) >= today).length;
+  const todayMemos = memos.filter((m: Memo) => new Date(m.created_at) >= today).length;
 
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
-  const weekMemos = memos.filter(m => new Date(m.created_at) >= weekAgo).length;
+  const weekMemos = memos.filter((m: Memo) => new Date(m.created_at) >= weekAgo).length;
 
   return (
     <MainLayout>
@@ -66,7 +68,7 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {columns.map((column, index) => {
+            {columns.map((column: Column, index: number) => {
               const colors = {
                 0: "text-green-700",
                 1: "text-blue-700",
@@ -157,7 +159,7 @@ export default function DashboardPage() {
                   {totalMemos === 0
                     ? 0
                     : Math.round(
-                        memos.reduce((acc, m) => acc + m.content.length, 0) / totalMemos
+                        memos.reduce((acc: number, m: Memo) => acc + m.content.length, 0) / totalMemos
                       )}
                 </CardTitle>
               </CardHeader>
@@ -190,7 +192,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {columns.map((column) => (
+                {columns.map((column: Column) => (
                   <div key={column.id} className="flex items-center justify-between py-2 border-b last:border-0">
                     <span className="font-medium">{column.title}</span>
                     <span className="text-sm text-muted-foreground">
@@ -227,7 +229,7 @@ export default function DashboardPage() {
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {recentMemos.map((memo) => (
+                  {recentMemos.map((memo: Memo) => (
                     <div key={memo.id} className="border-b last:border-0 pb-3 last:pb-0">
                       <h4 className="font-medium text-sm">{memo.title}</h4>
                       <p className="text-xs text-muted-foreground line-clamp-2 mt-1">

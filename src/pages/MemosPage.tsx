@@ -1,7 +1,7 @@
-import { useMemos } from "@/pages/kanban/hooks/useMemos";
-import { MemoForm } from "@/pages/kanban/ui/MemoForm";
-import { MemoFilters } from "@/pages/kanban/ui/MemoFilters";
-import { MemoList } from "@/pages/kanban/ui/MemoList";
+import { useMemosWithFilters } from "@/features/memos/hooks/useMemosWithFilters";
+import { MemoForm } from "@/pages/memos/ui/MemoForm";
+import { MemoFilters } from "@/pages/memos/ui/MemoFilters";
+import { MemoList } from "@/pages/memos/ui/MemoList";
 import { MainLayout } from "@/app/layouts";
 
 export default function MemosPage() {
@@ -10,14 +10,16 @@ export default function MemosPage() {
     loading,
     searchQuery,
     selectedDate,
+    selectedTagIds,
     editingMemoId,
     setSearchQuery,
     setSelectedDate,
+    setSelectedTagIds,
     setEditingMemoId,
     createMemo,
     editMemo,
     removeMemo,
-  } = useMemos();
+  } = useMemosWithFilters();
 
   if (loading) {
     return (
@@ -39,8 +41,10 @@ export default function MemosPage() {
             <MemoFilters
               searchQuery={searchQuery}
               selectedDate={selectedDate}
+              selectedTagIds={selectedTagIds}
               onSearchChange={setSearchQuery}
               onDateChange={setSelectedDate}
+              onTagsChange={setSelectedTagIds}
             />
           </div>
           <div className="lg:col-span-2">

@@ -10,7 +10,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useKanban } from "@/pages/kanban/hooks/useKanban";
+import { useKanbanBoard } from "@/features/kanban/hooks/useKanbanBoard";
 import { SortableCard } from "@/pages/kanban/ui/SortableCard";
 import { DroppableColumn } from "@/pages/kanban/ui/DroppableColumn";
 import { AddCardForm } from "@/pages/kanban/ui/AddCardForm";
@@ -35,7 +35,7 @@ function KanbanBoard() {
     deleteCard,
     handleDragStart,
     handleDragEnd,
-  } = useKanban();
+  } = useKanbanBoard();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
