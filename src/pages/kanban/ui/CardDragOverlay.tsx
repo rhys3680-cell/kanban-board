@@ -1,4 +1,4 @@
-import type { Card } from "@/pages/kanban/model/types";
+import type { Card } from "@/entities/kanban";
 
 interface CardDragOverlayProps {
   card: Card | null;

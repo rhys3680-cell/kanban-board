@@ -6,6 +6,7 @@ export interface Card {
   position: number;
   created_at: string;
   updated_at: string;
+  user_id?: string;
 }
 
 export interface Column {
@@ -14,12 +15,4 @@ export interface Column {
   position: number;
   created_at: string;
   cards: Card[];
-}
-
-export interface Memo {
-  id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
 }
