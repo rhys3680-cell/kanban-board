@@ -1,13 +1,14 @@
 import { supabase } from "@/shared/libs/supabase";
 import type { Column } from "../model/types";
 
-export async function fetchKanbanData(): Promise<Column[]> {
+export async function fetchKanbanData(boardId: string): Promise<Column[]> {
   const { data, error } = await supabase
     .from("columns")
     .select(`
       *,
       cards (*)
     `)
+    .eq("board_id", boardId)
     .order("position");
 
   if (error) throw error;
@@ -70,6 +71,39 @@ export async function moveCardToColumn(
       position: newPosition,
     })
     .eq("id", cardId);
+
+  if (error) throw error;
+}
+
+// Column CRUD
+export async function createColumn(
+  boardId: string,
+  title: string,
+  position: number
+): Promise<void> {
+  const { error } = await supabase.from("columns").insert({
+    board_id: boardId,
+    title,
+    position,
+  });
+
+  if (error) throw error;
+}
+
+export async function updateColumn(
+  columnId: string,
+  title: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("columns")
+    .update({ title })
+    .eq("id", columnId);
+
+  if (error) throw error;
+}
+
+export async function deleteColumn(columnId: string): Promise<void> {
+  const { error } = await supabase.from("columns").delete().eq("id", columnId);
 
   if (error) throw error;
 }
