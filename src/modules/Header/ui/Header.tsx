@@ -9,7 +9,7 @@ export function Header() {
   const location = useLocation();
 
   const navItems = [
-    { path: "/", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/kanban", label: "Kanban", icon: LayoutGrid },
     { path: "/memos", label: "Memos", icon: StickyNote },
     { path: "/tags", label: "Tags", icon: Tag },
@@ -19,7 +19,7 @@ export function Header() {
     <header className="border-b bg-background">
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between mb-3 md:mb-0">
-          <Link to="/">
+          <Link to="/dashboard">
             <h1 className="text-lg md:text-2xl font-bold bg-linear-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer">
               Kanban Board
             </h1>

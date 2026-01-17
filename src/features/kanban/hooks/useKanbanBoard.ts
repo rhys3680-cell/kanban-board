@@ -9,8 +9,8 @@ import {
   useMoveCardMutation,
 } from "@/entities/kanban";
 
-export function useKanbanBoard() {
-  const { data: columns = [], isLoading: loading } = useKanbanQuery();
+export function useKanbanBoard(boardId: string | null) {
+  const { data: columns = [], isLoading: loading } = useKanbanQuery(boardId);
   const addCardMutation = useAddCardMutation();
   const updateCardMutation = useUpdateCardMutation();
   const deleteCardMutation = useDeleteCardMutation();
